@@ -14,6 +14,7 @@ __________
 $ termux-setup-storage (jika lewat folder)
 $ cd deff-tele
 $ yarn
+$ mkdir sampah
 $ npm start
 
 Jika ada kekurangan mohon ditambah sendiri.
