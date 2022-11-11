@@ -1,0 +1,20 @@
+CARA INSTALL BOT!
+
+Buka Telegram lalu cari (Bot Father) Klik start, lalu buat bot sesuai petunjuk.
+[ Jika tidak faham bisa search di youtube/google ]
+Jika sudah mendapatkan token dari Bot Father, copy token tersebut dan paste pada
+setting.js (tokenbot)
+
+Jika sudah install script seperti biasa.
+On Termux :
+$ pkg update && pkg upgrade 
+$ pkg install nodejs
+$ pkg instal yarn
+__________
+$ termux-setup-storage (jika lewat folder)
+$ cd deff-tele
+$ yarn
+$ npm start
+
+Jika ada kekurangan mohon ditambah sendiri.
+SEKIAN DAN TERIMA GAJI🙂
