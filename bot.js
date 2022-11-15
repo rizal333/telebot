@@ -19,7 +19,7 @@ const speed = require(`performance-now`);
 const moment = require('moment-timezone')
 
 const { color, bgcolor, ConsoleLog, biocolor } = require('./lib/color')
-const { sendVideo, toJson, isUrl, format, getBuffer, getRandom, sendsearch } = require('./lib/funcation.js')
+const { sendVideo, toJson, isUrl, format, getBuffer, getRandom, sendsearch, pushname, sendText} = require('./lib/funcation.js')
 const setting = require('./lib/setting.js')
 const men = require("./menu/help.js")
 const { TiktokDownloader } = require("./lib/scraper/tiktokdl.js")
@@ -30,6 +30,9 @@ const mediafireDl  = require("./lib/scraper/mediafire.js")
 const { twitter } = require("./lib/scraper/twitter.js")
 const Cuaca = require("./lib/scraper/cuaca")
 const { facebookDownload } = require("./lib/scraper/fbdl")
+const ameClient = require("amethyste-api")
+const ameApi = new ameClient("1f486b04b157f12adf0b1fe0bd83c92a28ce768683871d2a390e25614150d0c8fa404fd01b82a5ebf5b82cbfa22e365e611c8501225a93d5d1e87f9f420eb91b")
+const brainly = require('brainly-scraper')
 /**
 [============== GATAU INI MAINAN ===============]
 */
@@ -52,7 +55,7 @@ console.log(bgcolor('\nBase by : Fadhil Graphy\nInstagram : deff.ydhs\n', 'gray'
 setTimeout(function () {
     console.log(color('Success Conected!', 'magenta'))
 }, 1000);
-const bot = new Telegraf(`${setting.tokenbot}`) 
+global.bot = new Telegraf(`${setting.tokenbot}`) 
 
 
 /**
@@ -63,20 +66,17 @@ bot.on("callback_query", async (ctx) => {
     var body = ctx.callbackQuery.data
     const chatss = ctx.update.callback_query.message.text || ctx.update.callback_query.message.caption || ""
 	var prefa = /^[°zZ#$@+,.?=''():√%!¢£¥€π¤ΠΦ_&<`™©®Δ^βα¦|/\\©^]/.test(chatss) ? chatss.match(/^[°zZ#$@+,.?=''():√%¢£¥€π¤ΠΦ_&<!`™©®Δ^βα¦|/\\©^]/gi) : '/'
-	
-	async function help(anu, name) {
 
-    text = men.start(ctx.update.callback_query.message.chat.first_name+" "+ctx.update.callback_query.message.chat.last_name)
+	
+async function donasi(anu, name) {
+
+    text = men.donasi(ctx.update.callback_query.message.chat.first_name+" "+ctx.update.callback_query.message.chat.last_name)
     options = {
         reply_markup: {
             inline_keyboard: [
-            	[
-					{ text: 'Source', url: 'github.com/deff-y'}
-				],
-				[ { text: 'Tutorial Penggunaan', url: 'https://youtu.be/dBx06IOjtBg'}
-				],
+            
                 [
-                    { text: 'ALL MENU', callback_data: 'allmenu' }                             ]
+                    { text: 'Back to menu', callback_data: 'command' }                             ]
             ]
         }
     }
@@ -87,28 +87,64 @@ bot.on("callback_query", async (ctx) => {
     }
 
 }
-    switch (body) {
-    //<No prefix / prefix awal bot>\\
-    	case "allmenu":
-        return ctx.editMessageText(men.menu(ctx.update.callback_query.message.chat.first_name+" "+ctx.update.callback_query.message.chat.last_name, prefa),{
+async function sendCmd(anu, text) {
+        return anu.editMessageText(text, {
 reply_markup: {
 inline_keyboard: [
 [{ text: 'My Instagram', url: 'instagram.com/deff.ydhs'}
 ],
 [
-{text: 'Back' ,callback_data: 'start'}]
+{text: 'Back' ,callback_data: 'command'}]
+]},
+disable_web_page_preview: "true", parse_mode: "Markdown"}).then(a => {
+        })
+        }
+    switch (body) {
+    //<No prefix / prefix awal bot>\\
+    	case "allmenu":
+        return ctx.editMessageText(men.allmenu(ctx.update.callback_query.message.chat.first_name+" "+ctx.update.callback_query.message.chat.last_name, prefa),{
+reply_markup: {
+inline_keyboard: [
+[{ text: 'My Instagram', url: 'instagram.com/deff.ydhs'}
+],
+[
+{text: 'Back' ,callback_data: 'command'}]
 ]},
 disable_web_page_preview: "true", parse_mode: "Markdown"}).then(a => {
         })
         break
+
+    	case "command":
+    	ctx.deleteMessage()
+        return sendText(bot, ctx, 'Hai Silahkan pilih menu dibawah')  
+        
+        case "downloadmenu":
+        sendCmd(ctx, men.downloader(prefa))
+        break
+        case "othermenu":
+        sendCmd(ctx, men.other(prefa))
+        break
+        case "searchmenu":
+        sendCmd(ctx, men.searching(prefa))
+        break
+        case "toolsmenu":
+        sendCmd(ctx, men.tools(prefa))
+        break
+        case "imagemanipulationmenu":
+        sendCmd(ctx, men.imageManipulation(prefa))
+        break
     	//PEMISAH!!
 		
-case 'start': {
-   	await help(ctx, ctx.update.callback_query.message.chat.first_name+" "+ctx.update.callback_query.message.chat.last_name, chatss)
+case 'donasi': {
+   	await donasi(ctx, ctx.update.callback_query.message.chat.first_name+" "+ctx.update.callback_query.message.chat.last_name, body)
    	}
 	break
+
     }
 })
+/*bot.action('start', async(ctx) =>{
+sendStart(bot,ctx)
+})*/
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -117,8 +153,9 @@ try {
 	const chats = client.message.text || client.message.caption || ""
     var prefix = /^[°zZ#$@+,.?=''():√%!¢£¥€π¤ΠΦ_&<`™©®Δ^βα¦|/\\©^]/.test(chats) ? chats.match(/^[°zZ#$@+,.?=''():√%¢£¥€π¤ΠΦ_&<!`™©®Δ^βα¦|/\\©^]/gi) : '.'
     const command = chats.trim().split(" ").shift().toLowerCase()
-	const isOwner = client.message.from.username == setting.owner
-	const pushname = client.message.from.first_name+" "+client.message.from.last_name
+    const name = pushname(client.message.from) 
+    const OwnerId = [`${setting.owner}`]
+    const isOwner = OwnerId.includes(name.full_name)
 	const from = client.message.from.id.toString()
 	const quotedMsg = client.message.reply_to_message
 	const isCmd = chats.startsWith(prefix)
@@ -169,25 +206,24 @@ file_id = isImage ? client.message.photo[client.message.photo.length - 1].file_i
 
 
 if (isCmd) {
-	console.log(color('[CMD]', 'green'), color(time, 'blue'), color(chats.split(" ")[0] || chats, 'cyan'), color("By", "green"), color(pushname, 'white'))
+	console.log(color('[CMD]', 'green'), color(time, 'blue'), color(chats.split(" ")[0] || chats, 'cyan'), color("By", "green"), color(name.full_name, 'white'))
 	}
 /**
 [============== FUNCATION MENU ===============]
 */
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-async function help(anu, name) {
+async function help(anu) {
 
-    text = men.start(pushname)
+    text = men.start()
     options = {
         reply_markup: {
             inline_keyboard: [
             	[
-					{ text: 'Source', url: 'github.com/deff-y'}
-				],
-				[ { text: 'Tutorial Penggunaan', url: 'https://youtu.be/dBx06IOjtBg'}
+					{ text: 'Source', url: 'github.com/deff-y'},
+				    { text: 'Tutorial Penggunaan', url: 'https://youtu.be/dBx06IOjtBg'}
 				],
                 [
-                    { text: 'ALL MENU', callback_data: 'allmenu' }                 ]
+                    { text: 'Command', callback_data: 'command' }                 ]
             ]
         }
     }
@@ -207,6 +243,7 @@ async function help(anu, name) {
 
 switch (command) {
 	case ">":
+if (!isOwner) return
 	try {
     	let evaled = await eval(chats.slice(2))
     	if (typeof evaled !== 'string') evaled = require('util').inspect(evaled)
@@ -216,16 +253,16 @@ switch (command) {
 	}
 	break
 
-	case prefix+"help": 
+	case prefix+"menu": 
 	case prefix+"start": {
-   	await help(client, pushname, from)
+     help(client)
    	}
 	break
 	//BUAT MISAH AJA!!!
 	case prefix+'tiktoknowm':
 	case prefix+'tiktok':
 	case prefix+'tt':{
-if (!q) return client.reply(`masukan url\ncontoh : ${prefix}tiktok <link>`)
+if (!q) return client.reply(`masukan url\ncontoh ketik : ${prefix}tiktok <link>`)
            sendsearch(bot,client)
                  TiktokDownloader(args[0])
             	 .then(async hasil => {	
@@ -242,7 +279,7 @@ if (!q) return client.reply(`masukan url\ncontoh : ${prefix}tiktok <link>`)
 			    break
 case prefix+'searchimage':
 case prefix+'gimage': 
-if(!q) return client.reply('Nyari apa kak?\nContoh: /searchimage kuda')
+if(!q) return client.reply('Nyari apa kak?\ncontoh ketik: /searchimage kuda')
 sendsearch(bot,client)
 let results = await gis(args.join(" ")) || []
 let { url, width, height } = results[Math.floor(Math.random() * results.length)] || {}
@@ -277,7 +314,7 @@ parse_mode: "Markdown"
 break
 case prefix+'ytmp4':
 case prefix+'youtubemp4': {
-if (!q) return client.reply(`masukan url\ncontoh : ${prefix}ytmp4 https://youtu.be/JFK-K4d3JzQ`)
+if (!q) return client.reply(`masukan url\ncontoh ketik : ${prefix}ytmp4 https://youtu.be/JFK-K4d3JzQ`)
 sendsearch(bot,client)
 let nuh = await youtube(q)
 console.log(nuh)
@@ -295,7 +332,7 @@ break
 
 case prefix+'ytmp3':
 case prefix+'youtubemp3': {
-if (!q) return client.reply(`masukan url\ncontoh : ${prefix}ytmp3 https://youtu.be/JFK-K4d3JzQ`)
+if (!q) return client.reply(`masukan url\ncontoh ketik : ${prefix}ytmp3 https://youtu.be/JFK-K4d3JzQ`)
 sendsearch(bot,client)
 let nuh = await youtube(q)
 console.log(nuh)
@@ -316,7 +353,7 @@ setTimeout(() => { fs.unlinkSync(buff) }, 10000)
 break
 case prefix+'igdl':
 case prefix+'instagram' : {
-if (!q) return client.reply(`masukan url\ncontoh : ${prefix}instagram <link>`)
+if (!q) return client.reply(`masukan url\ncontoh ketik : ${prefix}instagram <link>`)
 sendsearch(bot,client)
 let IG = await instagram(q)
 let TXT = ` *⇨ Your Url* : ${IG.url}\n`
@@ -337,7 +374,7 @@ filename: Date.now() + '.jpg' })
 }
 break
 case prefix+'mediafire':{
-if (!q) return client.reply(`masukan url\ncontoh : ${prefix}mediafire <link>`)
+if (!q) return client.reply(`masukan url\ncontoh ketik : ${prefix}mediafire <link>`)
 sendsearch(bot,client)
 let medi = await mediafireDl(q)
 texs = `[ Mediafire Download 📥 ]\n\n> Name : ${medi[0].name}\n> Type : application/${medi[0].mime}\n> FileSize :  ${medi[0].size}\n${medi[0].link}`
@@ -348,7 +385,7 @@ filename: medi[0].name + '.' + medi[0].mime })
 }
 break
 case prefix+'twitter':{
-if (!q) return client.reply(`masukan url\ncontoh : ${prefix}twitter <link>`)
+if (!q) return client.reply(`masukan url\ncontoh ketik : ${prefix}twitter <link>`)
 sendsearch(bot,client)
 const down = await twitter(args[0])
 const url = down.HD
@@ -358,7 +395,7 @@ await sendVideo(client,url,filename,'Done')
 break
 case prefix+'facebook':
 case prefix+'fbdl':{
-if (!q) return client.reply(`masukan url\ncontoh : ${prefix}facebook <link>`)
+if (!q) return client.reply(`masukan url\ncontoh ketik : ${prefix}facebook <link>`)
 sendsearch(bot,client)
 if(q.includes('/reel/')) return msg.reply('Fitur ini tidak berfungsi untuk video reels!')
 if(!q.includes('/videos/') && !q.includes('watch/')) return client.reply('Media tidak valid!\nHanya mendukung tautan seperti contoh : \n- https://facebook.com/username/videos/\n- https://fb.watch/plmnkoijb')            
@@ -370,13 +407,15 @@ await sendVideo(client,link,filename,'Done')
 break
 case prefix+'cuaca':
 case prefix+'cekcuaca':{
-if (!q) return client.reply(`masukan lokasi\ncontoh : ${prefix}cekcuaca <lokasi>`)
+if (!q) return client.reply(`masukan lokasi\ncontoh ketik : ${prefix}cekcuaca jakarta`)
+sendsearch(bot,client)
 cuaca = await Cuaca(q)
 text = client.reply(`Nama : ${cuaca.data.Nama}\nSuhu : ${cuaca.data.Suhu}\nAngin : ${cuaca.data.Angin}\nKelembapan : ${cuaca.data.Kelembaban}\nCuaca : ${cuaca.data.Cuaca}\nUdara : ${cuaca.data.Udara}`)
 }
 break
 case prefix+'tourl':{
-if (!isQuotedImage) return client.reply('Reply Gambar yang ingin di convert ke url') 
+if (!isQuotedImage) return client.reply('Reply Gambar yang ingin di convert ke url dengan caption /tourl') 
+sendsearch(bot,client)
 try {
 let buff = await getBuffer(mediaLink)
 let ranV = getRandom('.jpg')
@@ -390,6 +429,24 @@ client.reply('Hanya support Image')
 }
 }
 break
+case prefix+'wanted': case prefix+'utatoo': case prefix+'unsharpen': case prefix+'thanos': case prefix+'sniper': case prefix+'sharpen': case prefix+'sepia': case prefix+'scary': case prefix+'rip': case prefix+'redple': case prefix+'rejected': case prefix+'posterize': case prefix+'ps4': case prefix+'pixelize': case prefix+'missionpassed': case prefix+'moustache': case prefix+'lookwhatkarenhave': case prefix+'jail': case prefix+'invert': case prefix+'greyscale': case prefix+'glitch': case prefix+'gay': case prefix+'frame': case prefix+'fire': case prefix+'distort': case prefix+'dictator': case prefix+'deepfry': case prefix+'ddungeon': case prefix+'circle': case prefix+'challenger': case prefix+'burn': case prefix+'brazzers': case prefix+'beautiful': {
+sendsearch(bot,client)
+let buff = await getBuffer(mediaLink)
+let ranV = getRandom('.jpg')
+await fs.writeFileSync('./sampah/' + ranV, buff)
+const buffer = './sampah/' + ranV  
+const graph = await TelegraPh(buffer)
+ameApi.generate(chats.slice(1), { url : graph }).then(gambar => { 
+client.replyWithPhoto({
+source: gambar,
+filename: Date.now() + '.jpg' })
+})
+}
+break
+case prefix+'hh': {
+client.reply('yyy')
+}
+break 
 } // END COMMAND
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	} catch(e) {
@@ -397,7 +454,7 @@ console.log(e)
 }
 })
 
-bot.launch()
+bot.launch().then(() => console.log('BOT READY!'));
 process.once('SIGINT', () => bot.stop('SIGINT'))
 process.once('SIGTERM', () => bot.stop('SIGTERM'))
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
