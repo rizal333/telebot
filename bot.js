@@ -1,7 +1,7 @@
 /**
 	* CREATED BY FADHIL GRAPHY
 	* CARA INSTALL? BUKA PADA FOLDER MENU LALU BUKA FILE carainstall.txt
-	* ADDIN AUTO UPDATE WOI, GW ADD MALAH EROR:v
+	* BY DEFF
 */
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
