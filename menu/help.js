@@ -87,6 +87,7 @@ ${pref}instagram <url>
 ${pref}mediafire <url>
 ${pref}facebook <url>
 ${pref}twitter <url>
+${pref}spotify <url>
 
 **[Searching]**
 ${pref}searchimage <query>
