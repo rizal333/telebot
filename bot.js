@@ -1,7 +1,7 @@
 /**
-	* BASE BY FADHIL GRAPHY
+	* CREATED BY FADHIL GRAPHY
 	* CARA INSTALL? BUKA PADA FOLDER MENU LALU BUKA FILE carainstall.txt
-	* BY DEFF
+	* ADDIN AUTO UPDATE WOI, GW ADD MALAH EROR:v
 */
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -33,6 +33,11 @@ const { facebookDownload } = require("./lib/scraper/fbdl")
 const ameClient = require("amethyste-api")
 const ameApi = new ameClient("1f486b04b157f12adf0b1fe0bd83c92a28ce768683871d2a390e25614150d0c8fa404fd01b82a5ebf5b82cbfa22e365e611c8501225a93d5d1e87f9f420eb91b")
 const brainly = require('brainly-scraper')
+const Spotify = require('spotifydl-core').default
+const spotify = new Spotify({
+clientId: 'acc6302297e040aeb6e4ac1fbdfd62c3',
+clientSecret: '0e8439a1280a43aba9a5bc0a16f3f009'
+}) 
 /**
 [============== GATAU INI MAINAN ===============]
 */
@@ -205,7 +210,8 @@ file_id = isImage ? client.message.photo[client.message.photo.length - 1].file_i
      var mediaLink = file_id != "" ? await getLink(file_id) : ""
 
 
-if (isCmd) {
+if (chats) {
+bot.telegram.sendChatAction(client.chat.id, 'upload_voice'),
 	console.log(color('[CMD]', 'green'), color(time, 'blue'), color(chats.split(" ")[0] || chats, 'cyan'), color("By", "green"), color(name.full_name, 'white'))
 	}
 /**
@@ -264,6 +270,7 @@ if (!isOwner) return
 	case prefix+'tt':{
 if (!q) return client.reply(`masukan url\ncontoh ketik : ${prefix}tiktok <link>`)
            sendsearch(bot,client)
+           try {
                  TiktokDownloader(args[0])
             	 .then(async hasil => {	
             	 var { media } = hasil
@@ -275,18 +282,25 @@ if (!q) return client.reply(`masukan url\ncontoh ketik : ${prefix}tiktok <link>`
 		await sendVideo(client,url,filename,nih)
 
 				})
+	} catch(e) {
+client.reply('Error : Masukan link yg valid')
+}
 				}
 			    break
 case prefix+'searchimage':
 case prefix+'gimage': 
 if(!q) return client.reply('Nyari apa kak?\ncontoh ketik: /searchimage kuda')
 sendsearch(bot,client)
+           try {
 let results = await gis(args.join(" ")) || []
 let { url, width, height } = results[Math.floor(Math.random() * results.length)] || {}
 if (!url) return client.reply('Gambar tidak ditemukan')
 client.replyWithPhoto({
 url: url,
 filename: Date.now() + '.jpg' })
+	} catch(e) {
+client.reply('Error')
+}
 break
 
 case prefix+'ping': case prefix+'status':
@@ -316,6 +330,7 @@ case prefix+'ytmp4':
 case prefix+'youtubemp4': {
 if (!q) return client.reply(`masukan url\ncontoh ketik : ${prefix}ytmp4 https://youtu.be/JFK-K4d3JzQ`)
 sendsearch(bot,client)
+           try {
 let nuh = await youtube(q)
 console.log(nuh)
 let link = nuh.link
@@ -327,6 +342,9 @@ console.log(result)
 await client.replyWithVideo({ source: buff});
 setTimeout(() => { fs.unlinkSync(buff) }, 10000)
 })
+	} catch(e) {
+client.reply('Error : Masukan link yg valid')
+}
 }
 break
 
@@ -334,6 +352,7 @@ case prefix+'ytmp3':
 case prefix+'youtubemp3': {
 if (!q) return client.reply(`masukan url\ncontoh ketik : ${prefix}ytmp3 https://youtu.be/JFK-K4d3JzQ`)
 sendsearch(bot,client)
+           try {
 let nuh = await youtube(q)
 console.log(nuh)
  let filename = Date.now()+'.mp3'
@@ -349,12 +368,16 @@ await client.replyWithVoice({
   });
 setTimeout(() => { fs.unlinkSync(buff) }, 10000)
 })
+	} catch(e) {
+client.reply('Error : Masukan link yg valid')
+}
 }
 break
 case prefix+'igdl':
 case prefix+'instagram' : {
 if (!q) return client.reply(`masukan url\ncontoh ketik : ${prefix}instagram <link>`)
 sendsearch(bot,client)
+           try {
 let IG = await instagram(q)
 let TXT = ` *⇨ Your Url* : ${IG.url}\n`
 TXT += ` *⇨ Title* : ${IG.title}\n`
@@ -370,47 +393,66 @@ filename: Date.now() + '.jpg' })
 } else if(v.extension == 'mp4'){
 	await sendVideo(client,url,filename,'Done')
 } 
-}              
+}  
+	} catch(e) {
+client.reply('Error : Masukan link yg valid')
+}
 }
 break
 case prefix+'mediafire':{
 if (!q) return client.reply(`masukan url\ncontoh ketik : ${prefix}mediafire <link>`)
 sendsearch(bot,client)
+           try {
 let medi = await mediafireDl(q)
 texs = `[ Mediafire Download 📥 ]\n\n> Name : ${medi[0].name}\n> Type : application/${medi[0].mime}\n> FileSize :  ${medi[0].size}\n${medi[0].link}`
 client.reply(texs)
 client.replyWithDocument({
 url: medi[0].link,
 filename: medi[0].name + '.' + medi[0].mime })
+	} catch(e) {
+client.reply('Error : Masukan link yg valid')
+}
 }
 break
 case prefix+'twitter':{
 if (!q) return client.reply(`masukan url\ncontoh ketik : ${prefix}twitter <link>`)
 sendsearch(bot,client)
+           try {
 const down = await twitter(args[0])
 const url = down.HD
 let filename = Date.now()+'.mp4'
 await sendVideo(client,url,filename,'Done')
+	} catch(e) {
+client.reply('Error : Masukan link yg valid')
+}
 }
 break
 case prefix+'facebook':
 case prefix+'fbdl':{
 if (!q) return client.reply(`masukan url\ncontoh ketik : ${prefix}facebook <link>`)
 sendsearch(bot,client)
+           try {
 if(q.includes('/reel/')) return msg.reply('Fitur ini tidak berfungsi untuk video reels!')
 if(!q.includes('/videos/') && !q.includes('watch/')) return client.reply('Media tidak valid!\nHanya mendukung tautan seperti contoh : \n- https://facebook.com/username/videos/\n- https://fb.watch/plmnkoijb')            
  let efbe = await facebookDownload(q)   
 let filename = Date.now()+'.mp4'
 let link = efbe.result.hd
 await sendVideo(client,link,filename,'Done')
+	} catch(e) {
+client.reply('Error : Masukan link yg valid')
+}
 }
 break
 case prefix+'cuaca':
 case prefix+'cekcuaca':{
 if (!q) return client.reply(`masukan lokasi\ncontoh ketik : ${prefix}cekcuaca jakarta`)
 sendsearch(bot,client)
+           try {
 cuaca = await Cuaca(q)
 text = client.reply(`Nama : ${cuaca.data.Nama}\nSuhu : ${cuaca.data.Suhu}\nAngin : ${cuaca.data.Angin}\nKelembapan : ${cuaca.data.Kelembaban}\nCuaca : ${cuaca.data.Cuaca}\nUdara : ${cuaca.data.Udara}`)
+	} catch(e) {
+client.reply('Error')
+}
 }
 break
 case prefix+'tourl':{
@@ -431,6 +473,7 @@ client.reply('Hanya support Image')
 break
 case prefix+'wanted': case prefix+'utatoo': case prefix+'unsharpen': case prefix+'thanos': case prefix+'sniper': case prefix+'sharpen': case prefix+'sepia': case prefix+'scary': case prefix+'rip': case prefix+'redple': case prefix+'rejected': case prefix+'posterize': case prefix+'ps4': case prefix+'pixelize': case prefix+'missionpassed': case prefix+'moustache': case prefix+'lookwhatkarenhave': case prefix+'jail': case prefix+'invert': case prefix+'greyscale': case prefix+'glitch': case prefix+'gay': case prefix+'frame': case prefix+'fire': case prefix+'distort': case prefix+'dictator': case prefix+'deepfry': case prefix+'ddungeon': case prefix+'circle': case prefix+'challenger': case prefix+'burn': case prefix+'brazzers': case prefix+'beautiful': {
 sendsearch(bot,client)
+try {
 let buff = await getBuffer(mediaLink)
 let ranV = getRandom('.jpg')
 await fs.writeFileSync('./sampah/' + ranV, buff)
@@ -441,12 +484,28 @@ client.replyWithPhoto({
 source: gambar,
 filename: Date.now() + '.jpg' })
 })
+	} catch(e) {
+client.reply('Error : Masukan link yg valid')
+}
 }
 break
 case prefix+'hh': {
 client.reply('yyy')
 }
 break 
+case prefix+'spotify':{
+if (!q) return client.reply(`masukan url\ncontoh ketik : ${prefix}spotify <link>`)
+sendsearch(bot,client)
+           try {
+let spo = await spotify.downloadTrack(q)
+await client.replyWithVoice({
+    source: spo
+  });
+  	} catch(e) {
+client.reply('Error : Masukan link yg valid')
+}
+}
+break
 } // END COMMAND
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	} catch(e) {
