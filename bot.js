@@ -485,7 +485,7 @@ source: gambar,
 filename: Date.now() + '.jpg' })
 })
 	} catch(e) {
-client.reply('Error : Masukan link yg valid')
+client.reply(`Reply image dengan caption ${command}`)
 }
 }
 break
