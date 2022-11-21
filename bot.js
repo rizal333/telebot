@@ -96,7 +96,7 @@ async function sendCmd(anu, text) {
         return anu.editMessageText(text, {
 reply_markup: {
 inline_keyboard: [
-[{ text: 'My Instagram', url: 'instagram.com/deff.ydhs'}
+[{ text: 'BotWa', url: 'wa.me/14404997395'}
 ],
 [
 {text: 'Back' ,callback_data: 'command'}]
@@ -110,7 +110,7 @@ disable_web_page_preview: "true", parse_mode: "Markdown"}).then(a => {
         return ctx.editMessageText(men.allmenu(ctx.update.callback_query.message.chat.first_name+" "+ctx.update.callback_query.message.chat.last_name, prefa),{
 reply_markup: {
 inline_keyboard: [
-[{ text: 'My Instagram', url: 'instagram.com/deff.ydhs'}
+[{ text: 'BotWa', url: 'wa.me/14404997395'}
 ],
 [
 {text: 'Back' ,callback_data: 'command'}]
